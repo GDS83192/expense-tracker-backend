@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const spendSchema = new Schema({
-    usernmae: {type: String, required: true },
+    username: {type: String, required: true },
     description: {type: String, required: true},
     amount: {type: Number, required: true},
 }, 
