@@ -16,6 +16,13 @@ connection.once('open', () => {
     console.log("Mongo connected successfully")
 })
 
+
+const spendsRouter = require('./routes/spends');
+const usersRouter = require('./routes/users');
+
+app.use('/spends', spendsRouter);
+app.use('/users', usersRouter)
+
 app.listen(port, () =>{
     console.log(`Server is running on ${port}`)
 })
