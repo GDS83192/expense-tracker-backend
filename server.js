@@ -1,28 +1,41 @@
-const express = require('express')
-const cors = require('cors')
-const mongoose = require('mongoose');
-require('dotenv').config();
+const path = require("path");
+const express = require("express");
+const dotenv = require("dotenv");
+const colors = require("colors");
+const morgan = require("morgan");
+const connectDB = require("./config/db");
+
+dotenv.config({ path: "./config/config.env" }); //specifying where .env file is
+
+connectDB(); // it will connect to mongo DB database
+
+const transactions = require("./routes/transactionRoute");
+const goals = require("./routes/goalRoute")
 
 const app = express();
-const port = process.env.PORT || 5000
-app.use(cors())
-app.use(express.json());
 
-const uri = process.env.MONGODB_URI;
-mongoose.connect(uri, {useNewUrlParser: true, useCreateIndex: true})
-const connection = mongoose.connection;
+app.use(express.json()); //it will all us to use bodyParser
 
-connection.once('open', () => {
-    console.log("Mongo connected successfully")
-})
+if (process.env.NODE_ENV === "developement") {
+  app.use(morgan("dev"));
+}
 
+app.use("/api/v1/transactions", transactions); //to use transactionRoute on the url
+//it will fire transactionRoute response on "/api/v1/transactions" url
+app.use("/api/v1/goals", goals);
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("client/build"));
 
-const spendsRouter = require('./routes/spends');
-const usersRouter = require('./routes/users');
+  app.get("*", (req, res) =>
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"))
+  );
+}
 
-app.use('/spends', spendsRouter);
-app.use('/users', usersRouter)
+const PORT = process.env.PORT || 5000;
 
-app.listen(port, () =>{
-    console.log(`Server is running on ${port}`)
-})
+app.listen(
+  PORT,
+  console.log(
+    `Server running in ${process.env.NODE_ENV} mode on port ${PORT}`.yellow.bold
+  )
+);
