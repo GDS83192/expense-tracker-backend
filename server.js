@@ -1,29 +1,23 @@
-const path = require("path");
 const express = require("express");
-const dotenv = require("dotenv");
-const colors = require("colors");
-const morgan = require("morgan");
 const connectDB = require("./config/db");
-
-dotenv.config({ path: "./config/config.env" }); //specifying where .env file is
-
-connectDB(); // it will connect to mongo DB database
-
-const transactions = require("./routes/transactionRoute");
-const goals = require("./routes/goalRoute")
+const path = require("path");
 
 const app = express();
 
-app.use(express.json()); //it will all us to use bodyParser
+// Connect Database
+connectDB();
 
-if (process.env.NODE_ENV === "developement") {
-  app.use(morgan("dev"));
-}
+// Init Middleware
+app.use(express.json({ extended: false }));
 
-app.use("/api/v1/transactions", transactions); //to use transactionRoute on the url
-//it will fire transactionRoute response on "/api/v1/transactions" url
-app.use("/api/v1/goals", goals);
+// Define Routes
+app.use("/api/users", require("./routes/users"));
+app.use("/api/auth", require("./routes/auth"));
+app.use("/api/expenses", require("./routes/expenses"));
+app.use("/api/goals"), require("./routes/goals")
+// Serve static assets in production
 if (process.env.NODE_ENV === "production") {
+  // Set static folder
   app.use(express.static("client/build"));
 
   app.get("*", (req, res) =>
@@ -33,9 +27,4 @@ if (process.env.NODE_ENV === "production") {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(
-  PORT,
-  console.log(
-    `Server running in ${process.env.NODE_ENV} mode on port ${PORT}`.yellow.bold
-  )
-);
+app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
