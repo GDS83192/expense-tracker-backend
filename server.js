@@ -14,7 +14,8 @@ app.use(express.json({ extended: false }));
 app.use("/api/users", require("./routes/users"));
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/expenses", require("./routes/expenses"));
-app.use("/api/goals"), require("./routes/goals")
+app.use("/api/goals", require("./routes/goals"))
+// app.use("/api/goals"), require("./routes/goals")
 // Serve static assets in production
 if (process.env.NODE_ENV === "production") {
   // Set static folder
