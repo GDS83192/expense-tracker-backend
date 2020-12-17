@@ -18,7 +18,7 @@ app.use("/api/goals", require("./routes/goals"))
 // app.use("/api/goals"), require("./routes/goals")
 // Serve static assets in production
 if (process.env.NODE_ENV === "production") {
-  // Set static folder
+  // Set static folder -- Expresses way of telling app to use public dir in react app
   app.use(express.static("client/build"));
 
   app.get("*", (req, res) =>
